@@ -7,6 +7,11 @@
 ## 📌 Project Abstract
 Retrieval-Augmented Generation (RAG) combines Large Language Models (LLMs) with external knowledge retrieval. However, RAG systems are susceptible to adversarial manipulation and prompt injection. SecureRAG is a robust middleware solution enforcing a "Zero Trust" architecture. It implements a dual-stage validation pipeline using DeBERTa-v3 for semantic threat detection and AES-256 GCM encryption for vector database storage, maintaining sub-200ms latency overhead via AMD ROCm acceleration.
 
+### Phase 1: Visual Prototyping
+* **Goal:** Establish a baseline RAG pipeline using Langflow and local LLaMA 3.
+* **Status:** Complete ✅
+* **Output:** ![Langflow Prototype](assets/phase1_langflow_success.png)
+
 ## 🏗️ System Architecture
 *(The architecture diagram will be added here)*
 ## 🚀 Setup Instructions
