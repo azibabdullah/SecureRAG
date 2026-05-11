@@ -5,15 +5,36 @@
 **Session:** 2023-2027 | BSCS-7B  
 
 ## 📌 Project Abstract
-Retrieval-Augmented Generation (RAG) combines Large Language Models (LLMs) with external knowledge retrieval. However, RAG systems are susceptible to adversarial manipulation and prompt injection. SecureRAG is a robust middleware solution enforcing a "Zero Trust" architecture. It implements a dual-stage validation pipeline using DeBERTa-v3 for semantic threat detection and AES-256 GCM encryption for vector database storage, maintaining sub-200ms latency overhead via AMD ROCm acceleration.
+Retrieval-Augmented Generation (RAG) combines Large Language Models (LLMs) with external knowledge retrieval. However, RAG systems are susceptible to adversarial manipulation and prompt injection. SecureRAG is a robust middleware solution enforcing a "Zero Trust" architecture. It implements a dual-stage validation pipeline using AI threat detection and AES-256 encryption for vector database storage, running entirely locally.
 
-### Phase 1: Visual Prototyping
-* **Goal:** Establish a baseline RAG pipeline using Langflow and local LLaMA 3.
-* **Status:** Complete ✅
-* **Output:** ![Langflow Prototype](assets/phase1_langflow_success.png)
+## 🚀 Technologies Used So Far
+* **LLM Engine:** Ollama (LLaMA 3 8B)
+* **Prototyping:** Langflow
+* **Database & Embeddings:** ChromaDB, Ollama Embeddings (all-minilm)
+* **Security Layer 1:** Microsoft Presidio (PII Masking), spaCy (NLP), Python `re` (Rule-Based filtering)
 
-## 🏗️ System Architecture
-*(The architecture diagram will be added here)*
+## 📂 Project Phases & Checkpoints
+
+### ✅ Phase 1: Visual Prototyping (Completed)
+* **Goal:** Establish a baseline RAG pipeline locally without cloud dependencies.
+* **Achievement:** Successfully built a Langflow pipeline that chunks text, generates embeddings locally via Ollama, stores them in a persistent ChromaDB (`./chroma_storage`), and retrieves context to answer queries via LLaMA 3.
+* **Output:** ![Langflow Prototype](assets/image_358117.png)
+
+### ✅ Phase 2: Layer 1 - Prompt Security (Completed)
+* **Goal:** Implement the first line of defense middleware to catch jailbreaks and redact sensitive data before reaching the LLM.
+* **Achievement:** Built `prompt_guard.py`. It uses a 3-step pipeline:
+  1. **Rule-Based Checker:** Regex patterns to catch "ignore instructions", "developer mode", etc.
+  2. **PII Masking:** Microsoft Presidio removes emails and phone numbers.
+  3. **Policy Engine:** Dynamically calculates risk and outputs ALLOW, MASK, or BLOCK.
+* **Output:** ![Layer 1 Architecture](assets/WhatsApp_Image_2026-05-04.jpeg)
+
+### ⏳ Phase 3: Storage & Retrieval Layer (Next)
+* **Goal:** Implement AES-256 GCM encryption for database storage and integrate Sentence Transformers natively in Python.
+
+### ⏳ Phase 4: Context Guard & Desktop App
+* **Goal:** Integrate DeBERTa-v3 for semantic anomaly detection and wrap the pipeline in a PyQt6 Desktop GUI.
+
+
 ## 🚀 Setup Instructions
 1. Clone the repository:
    ```bash
