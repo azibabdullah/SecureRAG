@@ -18,7 +18,7 @@ Retrieval-Augmented Generation (RAG) combines Large Language Models (LLMs) with 
 ### ✅ Phase 1: Visual Prototyping (Completed)
 * **Goal:** Establish a baseline RAG pipeline locally without cloud dependencies.
 * **Achievement:** Successfully built a Langflow pipeline that chunks text, generates embeddings locally via Ollama, stores them in a persistent ChromaDB (`./chroma_storage`), and retrieves context to answer queries via LLaMA 3.
-* **Output:** ![Langflow Prototype](assets/image_358117.png)
+* **Output:** ![Langflow Prototype](assets/phase1_langflow_success.png)
 
 ### ✅ Phase 2: Layer 1 - Prompt Security (Completed)
 * **Goal:** Implement the first line of defense middleware to catch jailbreaks and redact sensitive data before reaching the LLM.
@@ -26,7 +26,7 @@ Retrieval-Augmented Generation (RAG) combines Large Language Models (LLMs) with 
   1. **Rule-Based Checker:** Regex patterns to catch "ignore instructions", "developer mode", etc.
   2. **PII Masking:** Microsoft Presidio removes emails and phone numbers.
   3. **Policy Engine:** Dynamically calculates risk and outputs ALLOW, MASK, or BLOCK.
-* **Output:** ![Layer 1 Architecture](assets/WhatsApp_Image_2026-05-04.jpeg)
+* **Output:** ![Layer 1 Architecture](assets/phase2_layer1_success.png)
 
 ### ⏳ Phase 3: Storage & Retrieval Layer (Next)
 * **Goal:** Implement AES-256 GCM encryption for database storage and integrate Sentence Transformers natively in Python.
