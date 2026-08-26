@@ -1,6 +1,7 @@
 # SecureRAG: Secure Middleware for RAG-Based AI Systems
 
 **Supervised by:** Dr. Arshad Farhad
+
  Muhammad Abdullah Azib
 **Session:** 2023-2027 | BSCS-7B
 
