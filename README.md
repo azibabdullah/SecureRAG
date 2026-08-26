@@ -2,7 +2,8 @@
 
 **Supervised by:** Dr. Arshad Farhad
 
- Muhammad Abdullah Azib
+Name: Muhammad Abdullah Azib
+
 **Session:** 2023-2027 | BSCS-7B
 
 ## 📌 Project Abstract
