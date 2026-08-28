@@ -1,0 +1,42 @@
+dataset:
+  name: securerag_security_classifier
+  labels:
+    benign: 0
+    malicious: 1
+
+  train_sources:
+    prompt_injection:
+      hf_name: "hlyn/prompt-injection-judge-deberta-dataset"
+      text_column: "text"
+      label_column: "label"
+      attack_type_default: "direct_injection"
+      oversample_factor: 1.0   # confirmed: use as-is, no oversampling needed
+
+    indirect_injection:
+      hf_name: "MAlmasabi/Indirect-Prompt-Injection-BIPIA-GPT"
+      text_column: "context"    # CONFIRMED via manual inspection of malicious examples
+      label_column: "label"
+      attack_type_default: "indirect_injection"
+      oversample_factor: 2.0    # brings BIPIA to ~25% of combined training set
+
+  held_out_sources:
+    agentic_5k:
+      hf_name: "3nesdeniz/agentic-prompt-injection-5k"
+      text_column: "text"
+      label_column: "label"
+      # This dataset has rich per-row metadata (attack_family, technique, severity)
+      # which we preserve for detailed held-out evaluation reporting later.
+
+  splits:
+    train: 0.8
+    validation: 0.1
+    test: 0.1
+
+  preprocessing:
+    remove_duplicates: true
+    remove_empty: true
+    min_text_length: 3          # confirmed: Hlyn had a few 1-char junk rows
+    max_text_length_chars: 80000  # generous - Hlyn's max was ~71K chars
+    max_token_length: 512       # CONFIRMED via tokenizer check: 99.08% coverage
+
+  random_seed: 42
