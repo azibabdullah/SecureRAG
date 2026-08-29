@@ -2,7 +2,7 @@
 
 Training pool: 465019 rows (Hlyn + BIPIA-70K, oversampled, cross-deduplicated)
 
-Train/Val/Test: 372015 / 46502 / 46502
+Train/Val/Test: 424386 / 46502 / 46502
 
 Held-out (agentic_5k, NEVER trained on): 4935 rows
 

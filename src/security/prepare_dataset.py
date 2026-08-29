@@ -156,30 +156,40 @@ def main():
     sources = cfg["train_sources"]
     seed = cfg["random_seed"]
 
-    # --- Load and clean each training source ---
+    # --- Load and clean each training source (NO oversampling yet) ---
     hlyn_df = clean(load_hlyn(sources["prompt_injection"]), cfg["preprocessing"])
     bipia_df = clean(load_bipia(sources["indirect_injection"]), cfg["preprocessing"])
 
-    hlyn_df = oversample(hlyn_df, sources["prompt_injection"]["oversample_factor"], seed)
-    bipia_df = oversample(bipia_df, sources["indirect_injection"]["oversample_factor"], seed)
-    log.info(f"After oversampling - Hlyn: {len(hlyn_df)}, BIPIA: {len(bipia_df)}")
-
     combined = pd.concat([hlyn_df, bipia_df], ignore_index=True)
+    # Dedup FIRST, before any oversampling - oversampling-by-duplication creates
+    # exact-duplicate text, so if dedup ran after oversampling it would just
+    # delete the duplicates we intentionally created, silently cancelling it out.
     combined = cross_source_dedup(combined)
 
-    # --- Statistics report ---
+    # --- Statistics on the deduped (not yet oversampled) pool ---
     stats = {
-        "total_samples": len(combined),
+        "total_samples_before_oversampling": len(combined),
         "class_distribution": combined["label"].value_counts().to_dict(),
         "source_distribution": combined["source"].value_counts().to_dict(),
         "attack_type_distribution": combined["attack_type"].value_counts().to_dict(),
         "avg_length_chars": float(combined["text"].str.len().mean()),
         "max_length_chars": int(combined["text"].str.len().max()),
     }
-    log.info(f"Final training pool stats:\n{json.dumps(stats, indent=2, default=str)}")
+    log.info(f"Deduped pool stats (pre-oversampling):\n{json.dumps(stats, indent=2, default=str)}")
 
-    # --- Split ---
+    # --- Split FIRST, then oversample ONLY the training split ---
+    # This guarantees no duplicated row can ever appear in both train and
+    # validation/test - oversampling only inflates what the model trains on,
+    # never what it's evaluated against.
     train_df, val_df, test_df = stratified_split(combined, cfg)
+
+    bipia_oversample_factor = sources["indirect_injection"]["oversample_factor"]
+    train_bipia = train_df[train_df["source"] == "bipia_70k"]
+    train_hlyn = train_df[train_df["source"] == "hlyn"]
+    train_bipia_oversampled = oversample(train_bipia, bipia_oversample_factor, seed)
+    train_df = pd.concat([train_hlyn, train_bipia_oversampled], ignore_index=True)
+    train_df = train_df.sample(frac=1.0, random_state=seed).reset_index(drop=True)  # shuffle
+
     for name, d in [("train", train_df), ("validation", val_df), ("test", test_df)]:
         log.info(f"{name}: {len(d)} rows, source mix: {d['source'].value_counts().to_dict()}")
 
